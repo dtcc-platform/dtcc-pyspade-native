@@ -14,7 +14,7 @@ crate-type = ["cdylib", "staticlib"]
 # You can specify a specific version/tag/commit:
 # spade = { git = "https://github.com/Stoeoef/spade", tag = "v2.10.0" }
 # spade = { git = "https://github.com/Stoeoef/spade", rev = "abc123" }
-spade = { git = "https://github.com/Stoeoef/spade", branch = "main" }
+spade = { git = "https://github.com/Stoeoef/spade", branch = "master" }
 
 [profile.release]
 lto = true
