@@ -1,7 +1,7 @@
 # pyspade_native CMake configuration
 #
 # This file allows CMake projects to find the Spade C++ library
-# installed via pip/pyspade-native.
+# installed via pip install dtcc-pyspade-native.
 #
 # Usage in your CMakeLists.txt:
 #   find_package(pyspade_native REQUIRED)
@@ -21,7 +21,7 @@ set(PYSPADE_NATIVE_LIBRARY_DIR "${PYSPADE_NATIVE_ROOT}/lib")
 
 # Verify installation
 if(NOT EXISTS "${PYSPADE_NATIVE_INCLUDE_DIR}")
-    message(FATAL_ERROR "pyspade-native include directory not found: ${PYSPADE_NATIVE_INCLUDE_DIR}")
+    message(FATAL_ERROR "dtcc-pyspade-native include directory not found: ${PYSPADE_NATIVE_INCLUDE_DIR}")
 endif()
 
 # Find the Spade wrapper library
@@ -32,7 +32,7 @@ find_library(PYSPADE_NATIVE_LIBRARY
 )
 
 if(NOT PYSPADE_NATIVE_LIBRARY)
-    message(FATAL_ERROR "pyspade-native library not found in: ${PYSPADE_NATIVE_LIBRARY_DIR}")
+    message(FATAL_ERROR "dtcc-pyspade-native library not found in: ${PYSPADE_NATIVE_LIBRARY_DIR}")
 endif()
 
 # Find the FFI library

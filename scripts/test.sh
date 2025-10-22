@@ -1,9 +1,9 @@
 #!/bin/bash
-# Test pyspade-native installation
+# Test dtcc-pyspade-native installation
 
 set -e
 
-echo "=== Testing pyspade-native ==="
+echo "=== Testing dtcc-pyspade-native ==="
 
 # Test Python import
 echo "Testing Python import..."

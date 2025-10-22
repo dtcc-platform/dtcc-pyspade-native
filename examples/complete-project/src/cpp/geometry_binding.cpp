@@ -1,7 +1,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 #include <pybind11/stl.h>
-#include <spade_wrapper.h>  // From pyspade-native
+#include <spade_wrapper.h>  // From dtcc-pyspade-native
 #include <vector>
 
 namespace py = pybind11;
@@ -65,7 +65,7 @@ py::dict triangulate_simple_polygon(py::array_t<double> polygon_array, double ma
 }
 
 PYBIND11_MODULE(_geometry_core, m) {
-    m.doc() = "Example geometry module using Spade triangulation from pyspade-native";
+    m.doc() = "Example geometry module using Spade triangulation from dtcc-pyspade-native";
 
     m.def("triangulate", &triangulate_simple_polygon,
           "Triangulate a simple polygon",

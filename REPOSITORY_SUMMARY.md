@@ -1,12 +1,12 @@
-# Repository Summary: pyspade-native
+# Repository Summary: dtcc-pyspade-native
 
 ## Overview
 
-**pyspade-native** is a Python package that distributes the Spade C++ triangulation library for use in Python projects with C++ components. It ships the compiled C++ library via pip - **no Python bindings included**.
+**dtcc-pyspade-native** is a Python package that distributes the Spade C++ triangulation library for use in Python projects with C++ components. It ships the compiled C++ library via pip - **no Python bindings included**.
 
 ## Key Information
 
-- **Package Name**: `pyspade-native`
+- **Package Name**: `dtcc-pyspade-native`
 - **Version**: 0.1.0
 - **License**: MIT OR Apache-2.0 (dual-licensed)
 - **Python**: 3.8+
@@ -17,12 +17,12 @@
 Allows Python packages with C++ extensions to easily depend on the Spade triangulation library:
 
 ```bash
-pip install pyspade-native  # User installs once
+pip install dtcc-pyspade-native  # User installs once
 ```
 
 Then in their Python package:
 ```toml
-dependencies = ["pyspade-native>=0.1.0"]
+dependencies = ["dtcc-pyspade-native>=0.1.0"]
 ```
 
 And in their C++ code:
@@ -122,7 +122,7 @@ CMake projects can easily find and use the library:
 # Find Python
 find_package(Python REQUIRED COMPONENTS Interpreter)
 
-# Get pyspade-native CMake directory
+# Get dtcc-pyspade-native CMake directory
 execute_process(
     COMMAND ${Python_EXECUTABLE} -c "import pyspade_native; print(pyspade_native.get_cmake_dir())"
     OUTPUT_VARIABLE PYSPADE_CMAKE_DIR
@@ -192,7 +192,7 @@ twine upload dist/*
 
 When users install:
 ```bash
-pip install pyspade-native
+pip install dtcc-pyspade-native
 ```
 
 They get:

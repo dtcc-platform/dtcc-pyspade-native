@@ -1,6 +1,6 @@
-# Contributing to pyspade-native
+# Contributing to dtcc-pyspade-native
 
-Thank you for your interest in contributing to pyspade-native!
+Thank you for your interest in contributing to dtcc-pyspade-native!
 
 ## Development Setup
 
@@ -15,8 +15,8 @@ Thank you for your interest in contributing to pyspade-native!
 ### Clone and Install
 
 ```bash
-git clone https://github.com/dtcc-platform/pyspade-native
-cd pyspade-native
+git clone https://github.com/dtcc-platform/dtcc-pyspade-native
+cd dtcc-pyspade-native
 pip install -e ".[dev]"
 ```
 

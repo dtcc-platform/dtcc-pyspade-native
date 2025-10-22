@@ -2,9 +2,9 @@ name: Build and Test
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main, develop, rename]
   pull_request:
-    branches: [main]
+    branches: [main, rename]
   workflow_dispatch:
 
 jobs:
@@ -93,7 +93,7 @@ jobs:
 
       - name: Install wheel
         run: |
-          python -m pip install --find-links dist pyspade-native
+          python -m pip install --find-links dist dtcc-pyspade-native
 
       - name: Test import
         run: |

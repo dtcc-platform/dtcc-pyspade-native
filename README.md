@@ -1,14 +1,14 @@
-# pyspade-native
+# dtcc-pyspade-native
 
-[![PyPI version](https://badge.fury.io/py/pyspade-native.svg)](https://badge.fury.io/py/pyspade-native)
+[![PyPI version](https://badge.fury.io/py/dtcc-pyspade-native.svg)](https://badge.fury.io/py/dtcc-pyspade-native)
 [![License](https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0-blue.svg)](LICENSE)
-[![Python](https://img.shields.io/pypi/pyversions/pyspade-native.svg)](https://pypi.org/project/pyspade-native/)
+[![Python](https://img.shields.io/pypi/pyversions/dtcc-pyspade-native.svg)](https://pypi.org/project/dtcc-pyspade-native/)
 
 **Ship the Spade C++ triangulation library with your Python package** - no Python bindings, just pure C++ for your C++ extensions.
 
 ## What is this?
 
-`pyspade-native` packages the [Spade](https://github.com/Stoeoef/spade) C++ Delaunay triangulation library for distribution via PyPI. It's designed for Python projects that have C++ components and need fast, robust 2D triangulation.
+`dtcc-pyspade-native` packages the [Spade](https://github.com/Stoeoef/spade) C++ Delaunay triangulation library for distribution via PyPI. It's designed for Python projects that have C++ components and need fast, robust 2D triangulation.
 
 **Key Point**: This package provides **C++ libraries only** - no Python API. Use it when your Python project already has C++ extensions (pybind11, Cython, etc.) and you want to use Spade in that C++ code.
 
@@ -17,7 +17,7 @@
 ### Install
 
 ```bash
-pip install pyspade-native
+pip install dtcc-pyspade-native
 ```
 
 ### Use in Your Python Project
@@ -25,10 +25,10 @@ pip install pyspade-native
 **pyproject.toml:**
 ```toml
 [build-system]
-requires = ["scikit-build-core", "pybind11", "pyspade-native>=0.1.0"]
+requires = ["scikit-build-core", "pybind11", "dtcc-pyspade-native>=0.1.0"]
 
 [project]
-dependencies = ["pyspade-native>=0.1.0"]
+dependencies = ["dtcc-pyspade-native>=0.1.0"]
 ```
 
 **CMakeLists.txt:**
@@ -137,7 +137,7 @@ namespace spade {
 
 ## Example Project
 
-See [examples/complete-project](examples/complete-project) for a full working example of a Python package that uses pyspade-native.
+See [examples/complete-project](examples/complete-project) for a full working example of a Python package that uses dtcc-pyspade-native.
 
 ```bash
 cd examples/complete-project
@@ -148,8 +148,8 @@ python -c "from my_package import triangulate; print(triangulate([[0,0],[1,0],[0
 ## Building from Source
 
 ```bash
-git clone https://github.com/dtcc-platform/pyspade-native
-cd pyspade-native
+git clone https://github.com/dtcc-platform/dtcc-pyspade-native
+cd dtcc-pyspade-native
 pip install -e .
 ```
 
@@ -194,8 +194,8 @@ This project packages the [Spade](https://github.com/Stoeoef/spade) library by S
 
 ## Links
 
-- [PyPI Package](https://pypi.org/project/pyspade-native/)
-- [GitHub Repository](https://github.com/dtcc-platform/pyspade-native)
-- [Issue Tracker](https://github.com/dtcc-platform/pyspade-native/issues)
+- [PyPI Package](https://pypi.org/project/dtcc-pyspade-native/)
+- [GitHub Repository](https://github.com/dtcc-platform/dtcc-pyspade-native)
+- [Issue Tracker](https://github.com/dtcc-platform/dtcc-pyspade-native/issues)
 - [Spade Library](https://github.com/Stoeoef/spade)
-- [Documentation](https://dtcc-platform.github.io/pyspade-native/)
+- [Documentation](https://dtcc-platform.github.io/dtcc-pyspade-native/)

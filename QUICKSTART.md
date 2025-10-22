@@ -1,11 +1,11 @@
 # Quick Start Guide
 
-Get started with pyspade-native in 5 minutes!
+Get started with dtcc-pyspade-native in 5 minutes!
 
 ## 1. Install
 
 ```bash
-pip install pyspade-native
+pip install dtcc-pyspade-native
 ```
 
 ## 2. Verify Installation
@@ -16,7 +16,7 @@ python -m pyspade_native
 
 You should see output like:
 ```
-pyspade-native Installation Info
+dtcc-pyspade-native Installation Info
 ============================================================
 Version: 0.1.0
 Package directory: /path/to/site-packages/pyspade_native
@@ -44,12 +44,12 @@ my_project/
 **pyproject.toml:**
 ```toml
 [build-system]
-requires = ["scikit-build-core", "pybind11", "pyspade-native"]
+requires = ["scikit-build-core", "pybind11", "dtcc-pyspade-native"]
 
 [project]
 name = "my-package"
 version = "0.1.0"
-dependencies = ["pyspade-native"]
+dependencies = ["dtcc-pyspade-native"]
 ```
 
 **CMakeLists.txt:**
@@ -60,7 +60,7 @@ project(my_package)
 find_package(Python REQUIRED COMPONENTS Interpreter Development)
 find_package(pybind11 CONFIG REQUIRED)
 
-# Find pyspade-native
+# Find dtcc-pyspade-native
 execute_process(
     COMMAND ${Python_EXECUTABLE} -c "import pyspade_native; print(pyspade_native.get_cmake_dir())"
     OUTPUT_VARIABLE PYSPADE_CMAKE_DIR
@@ -125,7 +125,7 @@ See the [complete example project](examples/complete-project/README.md) for a fu
 **Solution:** Make sure it's in your build requirements:
 ```toml
 [build-system]
-requires = ["pyspade-native>=0.1.0", ...]
+requires = ["dtcc-pyspade-native>=0.1.0", ...]
 ```
 
 **Problem:** CMake can't find pyspade_native
@@ -142,6 +142,6 @@ target_link_libraries(your_target PRIVATE pyspade_native::spade_wrapper)
 
 ## Get Help
 
-- [Documentation](https://dtcc-platform.github.io/pyspade-native/)
-- [GitHub Issues](https://github.com/dtcc-platform/pyspade-native/issues)
-- [Discussions](https://github.com/dtcc-platform/pyspade-native/discussions)
+- [Documentation](https://dtcc-platform.github.io/dtcc-pyspade-native/)
+- [GitHub Issues](https://github.com/dtcc-platform/dtcc-pyspade-native/issues)
+- [Discussions](https://github.com/dtcc-platform/dtcc-pyspade-native/discussions)

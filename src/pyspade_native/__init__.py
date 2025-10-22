@@ -1,11 +1,14 @@
 """
-pyspade-native: Spade C++ library packaged for Python projects.
+dtcc-pyspade-native: Spade C++ library packaged for Python projects.
 
 This package provides the Spade C++ Delaunay triangulation library
 for use in Python projects that have C++ components.
 
 No Python bindings are provided - this is purely for shipping the
 C++ library via pip.
+
+PyPI package name: dtcc-pyspade-native
+GitHub repository: dtcc-pyspade-native
 """
 
 import os
@@ -121,8 +124,8 @@ def get_libraries() -> dict:
 
 
 def print_info():
-    """Print information about the pyspade-native installation."""
-    print("pyspade-native Installation Info")
+    """Print information about the dtcc-pyspade-native installation."""
+    print("dtcc-pyspade-native Installation Info")
     print("=" * 60)
     print(f"Version: {__version__}")
     print(f"Package directory: {_PACKAGE_DIR}")

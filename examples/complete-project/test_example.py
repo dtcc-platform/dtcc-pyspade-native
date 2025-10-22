@@ -6,7 +6,7 @@ from example_pkg import triangulate
 
 
 def main():
-    print("Testing pyspade-native integration...")
+    print("Testing dtcc-pyspade-native integration...")
 
     # Create a simple polygon
     polygon = np.array([
@@ -31,7 +31,7 @@ def main():
         tri = result['triangles'][i]
         print(f"  Triangle {i}: {tri}")
 
-    print("\n✓ Test passed! pyspade-native is working correctly.")
+    print("\n✓ Test passed! dtcc-pyspade-native is working correctly.")
 
 
 if __name__ == "__main__":
