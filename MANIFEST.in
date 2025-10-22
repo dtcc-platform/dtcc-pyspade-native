@@ -9,9 +9,9 @@ recursive-include cmake *.cmake *.cmake.in
 recursive-include src *.py
 
 # Include the cppspade library source
-recursive-include cppspade include *.h
-recursive-include cppspade src *.cpp *.rs
-recursive-include cppspade cmake *.cmake
+recursive-include cppspade/include *.h
+recursive-include cppspade/src *.cpp *.rs
+recursive-include cppspade/cmake *.cmake *.cmake.in
 include cppspade/CMakeLists.txt
 include cppspade/Cargo.toml
 
