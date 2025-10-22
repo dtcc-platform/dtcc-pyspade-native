@@ -28,13 +28,52 @@ function(build_spade_rust SOURCE_DIR OUTPUT_DIR)
     endif()
 
     set(RUST_TARGET_DIR "${SOURCE_DIR}/target")
+
+    # Determine the appropriate Cargo target triple when cross-compiling.
+    set(RUST_TARGET_TRIPLE "")
+    if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+        if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+            set(RUST_TARGET_TRIPLE "x86_64-pc-windows-msvc")
+        elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
+            set(RUST_TARGET_TRIPLE "i686-pc-windows-msvc")
+        endif()
+    elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+        if(CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64|arm64")
+            set(RUST_TARGET_TRIPLE "aarch64-unknown-linux-gnu")
+        endif()
+    elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+        if(CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64|arm64")
+            set(RUST_TARGET_TRIPLE "aarch64-apple-darwin")
+        endif()
+    endif()
+
     set(RUST_OUTPUT_DIR "${RUST_TARGET_DIR}/release")
+    set(RUST_BUILD_ARGS build --release --manifest-path ${SOURCE_DIR}/Cargo.toml)
+
+    if(RUST_TARGET_TRIPLE)
+        list(APPEND RUST_BUILD_ARGS --target ${RUST_TARGET_TRIPLE})
+        set(RUST_OUTPUT_DIR "${RUST_TARGET_DIR}/${RUST_TARGET_TRIPLE}/release")
+
+        # Ensure the requested target triple is installed (idempotent if already present).
+        find_program(RUSTUP_EXECUTABLE rustup)
+        if(RUSTUP_EXECUTABLE)
+            execute_process(
+                COMMAND ${RUSTUP_EXECUTABLE} target add ${RUST_TARGET_TRIPLE}
+                RESULT_VARIABLE RUSTUP_RESULT
+                OUTPUT_QUIET
+                ERROR_QUIET
+            )
+            if(NOT RUSTUP_RESULT EQUAL 0)
+                message(WARNING "rustup target add ${RUST_TARGET_TRIPLE} failed; build may not find the correct toolchain")
+            endif()
+        endif()
+    endif()
 
     # Build the Rust library
     message(STATUS "Building Rust FFI library...")
 
     execute_process(
-        COMMAND ${CARGO_EXECUTABLE} build --release --manifest-path ${SOURCE_DIR}/Cargo.toml
+        COMMAND ${CARGO_EXECUTABLE} ${RUST_BUILD_ARGS}
         WORKING_DIRECTORY ${SOURCE_DIR}
         RESULT_VARIABLE BUILD_RESULT
         OUTPUT_VARIABLE BUILD_OUTPUT
