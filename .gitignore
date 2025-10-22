@@ -48,6 +48,8 @@ _skbuild/
 !CMakeLists.txt
 !cmake/*.cmake
 !cmake/*.cmake.in
+!cppspade/cmake/*.cmake
+!cppspade/cmake/*.cmake.in
 
 # Rust/Cargo
 cppspade/target/
