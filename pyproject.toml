@@ -98,7 +98,7 @@ before-all = [
     "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y",
     "source $HOME/.cargo/env"
 ]
-environment = { PATH = "$HOME/.cargo/bin:$PATH" }
+environment = { PATH = "$HOME/.cargo/bin:$PATH", MACOSX_DEPLOYMENT_TARGET = "10.12", CMAKE_OSX_DEPLOYMENT_TARGET = "10.12" }
 
 [tool.cibuildwheel.windows]
 before-all = "rustup-init -y"
