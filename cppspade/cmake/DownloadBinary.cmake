@@ -5,6 +5,7 @@ include(FetchContent)
 
 function(download_spade_binary VERSION OUTPUT_DIR)
     set(SPADE_BINARY_BASE_URL "https://github.com/dtcc-platform/dtcc-wrapper-spade/releases/download")
+    set(SPADE_BINARY_IMPORT_PATH "" PARENT_SCOPE)
 
     # Detect platform
     if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
@@ -39,11 +40,45 @@ function(download_spade_binary VERSION OUTPUT_DIR)
     set(BINARY_URL "${SPADE_BINARY_BASE_URL}/v${VERSION}/${BINARY_NAME}")
     set(BINARY_PATH "${OUTPUT_DIR}/${LIB_PREFIX}spade_ffi${LIB_SUFFIX}")
 
+    set(IMPORT_NAME "")
+    set(IMPORT_URL "")
+    set(IMPORT_PATH "")
+    if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+        set(IMPORT_NAME "spade_ffi-${VERSION}-${PLATFORM_NAME}-${ARCH_NAME}.dll.lib")
+        set(IMPORT_URL "${SPADE_BINARY_BASE_URL}/v${VERSION}/${IMPORT_NAME}")
+        set(IMPORT_PATH "${OUTPUT_DIR}/spade_ffi.dll.lib")
+    endif()
+
+    macro(_spade_download_import)
+        if(IMPORT_URL)
+            file(DOWNLOAD
+                "${IMPORT_URL}"
+                "${IMPORT_PATH}"
+                STATUS IMPORT_DOWNLOAD_STATUS
+                SHOW_PROGRESS
+            )
+
+            if(IMPORT_DOWNLOAD_STATUS)
+                list(GET IMPORT_DOWNLOAD_STATUS 0 IMPORT_RESULT)
+            else()
+                set(IMPORT_RESULT 1)
+            endif()
+
+            if(IMPORT_RESULT EQUAL 0 AND EXISTS "${IMPORT_PATH}")
+                message(STATUS "Successfully downloaded import library to: ${IMPORT_PATH}")
+                set(SPADE_BINARY_IMPORT_PATH "${IMPORT_PATH}" PARENT_SCOPE)
+            else()
+                message(STATUS "Import library not available for download: ${IMPORT_URL}")
+            endif()
+        endif()
+    endmacro()
+
     # Check if binary already exists
     if(EXISTS "${BINARY_PATH}")
         message(STATUS "Pre-built binary already exists: ${BINARY_PATH}")
         set(SPADE_BINARY_FOUND TRUE PARENT_SCOPE)
         set(SPADE_BINARY_PATH "${BINARY_PATH}" PARENT_SCOPE)
+        _spade_download_import()
         return()
     endif()
 
@@ -70,6 +105,7 @@ function(download_spade_binary VERSION OUTPUT_DIR)
 
         set(SPADE_BINARY_FOUND TRUE PARENT_SCOPE)
         set(SPADE_BINARY_PATH "${BINARY_PATH}" PARENT_SCOPE)
+        _spade_download_import()
     else()
         message(STATUS "Failed to download pre-built binary: ${DOWNLOAD_ERROR}")
         file(REMOVE "${BINARY_PATH}")

@@ -4,6 +4,9 @@
 include(ExternalProject)
 
 function(build_spade_rust SOURCE_DIR OUTPUT_DIR)
+    set(SPADE_RUST_SHARED_LIBRARY "" PARENT_SCOPE)
+    set(SPADE_RUST_IMPORT_LIBRARY "" PARENT_SCOPE)
+    set(SPADE_RUST_STATIC_LIBRARY "" PARENT_SCOPE)
     # Check if Rust/Cargo is available
     find_program(CARGO_EXECUTABLE cargo)
 
@@ -19,12 +22,15 @@ function(build_spade_rust SOURCE_DIR OUTPUT_DIR)
     if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
         set(LIB_NAME "libspade_ffi.so")
         set(STATIC_LIB_NAME "libspade_ffi.a")
+        set(IMPORT_LIB_NAME "")
     elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
         set(LIB_NAME "libspade_ffi.dylib")
         set(STATIC_LIB_NAME "libspade_ffi.a")
+        set(IMPORT_LIB_NAME "")
     elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
         set(LIB_NAME "spade_ffi.dll")
         set(STATIC_LIB_NAME "spade_ffi.lib")
+        set(IMPORT_LIB_NAME "spade_ffi.dll.lib")
     endif()
 
     set(RUST_TARGET_DIR "${SOURCE_DIR}/target")
@@ -87,13 +93,19 @@ function(build_spade_rust SOURCE_DIR OUTPUT_DIR)
         if(EXISTS "${RUST_OUTPUT_DIR}/${LIB_NAME}")
             file(COPY "${RUST_OUTPUT_DIR}/${LIB_NAME}"
                  DESTINATION "${OUTPUT_DIR}")
-            set(SPADE_RUST_LIBRARY "${OUTPUT_DIR}/${LIB_NAME}" PARENT_SCOPE)
+            set(SPADE_RUST_SHARED_LIBRARY "${OUTPUT_DIR}/${LIB_NAME}" PARENT_SCOPE)
         endif()
 
-        if(EXISTS "${RUST_OUTPUT_DIR}/${STATIC_LIB_NAME}")
+        if(STATIC_LIB_NAME AND EXISTS "${RUST_OUTPUT_DIR}/${STATIC_LIB_NAME}")
             file(COPY "${RUST_OUTPUT_DIR}/${STATIC_LIB_NAME}"
                  DESTINATION "${OUTPUT_DIR}")
             set(SPADE_RUST_STATIC_LIBRARY "${OUTPUT_DIR}/${STATIC_LIB_NAME}" PARENT_SCOPE)
+        endif()
+
+        if(IMPORT_LIB_NAME AND EXISTS "${RUST_OUTPUT_DIR}/${IMPORT_LIB_NAME}")
+            file(COPY "${RUST_OUTPUT_DIR}/${IMPORT_LIB_NAME}"
+                 DESTINATION "${OUTPUT_DIR}")
+            set(SPADE_RUST_IMPORT_LIBRARY "${OUTPUT_DIR}/${IMPORT_LIB_NAME}" PARENT_SCOPE)
         endif()
 
         set(SPADE_RUST_BUILD_SUCCESS TRUE PARENT_SCOPE)

@@ -40,8 +40,12 @@ install(
 # Install the Rust FFI library
 if(TARGET spade_wrapper)
     # Find and install the FFI library
+    set(FFI_LIBS "")
     if(DEFINED SPADE_FFI_LIBRARY AND EXISTS "${SPADE_FFI_LIBRARY}")
-        set(FFI_LIBS "${SPADE_FFI_LIBRARY}")
+        list(APPEND FFI_LIBS "${SPADE_FFI_LIBRARY}")
+    endif()
+    if(DEFINED SPADE_FFI_RUNTIME_LIBRARY AND EXISTS "${SPADE_FFI_RUNTIME_LIBRARY}")
+        list(APPEND FFI_LIBS "${SPADE_FFI_RUNTIME_LIBRARY}")
     endif()
 
     set(FFI_SEARCH_PATHS
@@ -58,12 +62,17 @@ if(TARGET spade_wrapper)
                 "${SEARCH_PATH}/libspade_ffi.a"
                 "${SEARCH_PATH}/spade_ffi.dll"
                 "${SEARCH_PATH}/spade_ffi.lib"
+                "${SEARCH_PATH}/spade_ffi.dll.lib"
             )
             if(FFI_LIB_CANDIDATES)
-                set(FFI_LIBS ${FFI_LIB_CANDIDATES})
+                list(APPEND FFI_LIBS ${FFI_LIB_CANDIDATES})
                 break()
             endif()
         endforeach()
+    endif()
+
+    if(FFI_LIBS)
+        list(REMOVE_DUPLICATES FFI_LIBS)
     endif()
 
     if(FFI_LIBS)
