@@ -1,10 +1,10 @@
-# Example: Using pyspade-native in a Python Project
+# Example: Using dtcc-pyspade-native in a Python Project
 
-This example demonstrates how to use the `pyspade-native` package in a Python project that has C++ components.
+This example demonstrates how to use the `dtcc-pyspade-native` package in a Python project that has C++ components.
 
 ## What This Example Shows
 
-- How to depend on `pyspade-native` in `pyproject.toml`
+- How to depend on `dtcc-pyspade-native` in `pyproject.toml`
 - How to find and link the Spade C++ library using CMake
 - How to use Spade triangulation in your C++ code
 - How to expose the functionality to Python via pybind11
@@ -27,14 +27,14 @@ example_usage/
 
 ### Prerequisites
 
-1. Install pyspade-native:
+1. Install dtcc-pyspade-native:
    ```bash
-   pip install pyspade-native
+   pip install dtcc-pyspade-native
    ```
 
    Or if building from local source:
    ```bash
-   cd ../  # Go to pyspade-native directory
+   cd ../  # Go to dtcc-pyspade-native directory
    pip install .
    cd example_usage
    ```
@@ -53,7 +53,7 @@ python test_example.py
 
 Expected output:
 ```
-Testing pyspade-native integration...
+Testing dtcc-pyspade-native integration...
 Input polygon: (4, 2)
 Output vertices: 15
 Output triangles: 20
@@ -65,25 +65,25 @@ First few triangles:
   Triangle 1: [2 6 1]
   Triangle 2: [3 7 2]
 
-✓ Test passed! pyspade-native is working correctly.
+✓ Test passed! dtcc-pyspade-native is working correctly.
 ```
 
 ## Key Files Explained
 
 ### `pyproject.toml`
 
-Specifies dependencies on `pyspade-native`:
+Specifies dependencies on `dtcc-pyspade-native`:
 
 ```toml
 [build-system]
 requires = [
-    "pyspade-native>=0.1.0",  # Build-time dependency
+    "dtcc-pyspade-native>=0.1.0",  # Build-time dependency
     ...
 ]
 
 [project]
 dependencies = [
-    "pyspade-native>=0.1.0",  # Runtime dependency
+    "dtcc-pyspade-native>=0.1.0",  # Runtime dependency
 ]
 ```
 
@@ -92,14 +92,14 @@ dependencies = [
 Finds and links the Spade library:
 
 ```cmake
-# Get pyspade-native CMake directory from Python
+# Get dtcc-pyspade-native CMake directory from Python
 execute_process(
     COMMAND ${Python_EXECUTABLE} -c
         "import pyspade_native; print(pyspade_native.get_cmake_dir())"
     OUTPUT_VARIABLE PYSPADE_CMAKE_DIR
 )
 
-# Find pyspade-native package
+# Find dtcc-pyspade-native package
 find_package(pyspade_native REQUIRED PATHS ${PYSPADE_CMAKE_DIR})
 
 # Link your module with Spade
@@ -111,7 +111,7 @@ target_link_libraries(your_module PRIVATE pyspade_native::spade_wrapper)
 Uses Spade C++ API:
 
 ```cpp
-#include <spade_wrapper.h>  // From pyspade-native
+#include <spade_wrapper.h>  // From dtcc-pyspade-native
 
 // Use Spade in your C++ code
 auto result = spade::triangulate(
@@ -128,12 +128,12 @@ auto result = spade::triangulate(
 
 To use this pattern in your own project:
 
-1. **Add pyspade-native to your dependencies:**
+1. **Add dtcc-pyspade-native to your dependencies:**
    - In `pyproject.toml` build-system requires
    - In `pyproject.toml` project dependencies
 
 2. **Update your CMakeLists.txt:**
-   - Add the pyspade-native finding code
+   - Add the dtcc-pyspade-native finding code
    - Link your targets with `pyspade_native::spade_wrapper`
 
 3. **Use Spade in your C++ code:**
@@ -146,4 +146,4 @@ To use this pattern in your own project:
    - Configure Rust
    - Worry about platform differences
 
-The `pyspade-native` package handles all of that automatically!
+The `dtcc-pyspade-native` package handles all of that automatically!

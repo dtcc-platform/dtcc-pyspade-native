@@ -1,5 +1,5 @@
 """
-Example package demonstrating pyspade-native usage.
+Example package demonstrating dtcc-pyspade-native usage.
 
 This package uses Spade C++ library for triangulation in its C++ backend.
 """

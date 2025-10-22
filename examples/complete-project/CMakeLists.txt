@@ -8,8 +8,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(Python REQUIRED COMPONENTS Interpreter Development)
 find_package(pybind11 CONFIG REQUIRED)
 
-# Find pyspade-native
-message(STATUS "Looking for pyspade-native...")
+# Find dtcc-pyspade-native
+message(STATUS "Looking for dtcc-pyspade-native...")
 execute_process(
     COMMAND ${Python_EXECUTABLE} -c "import pyspade_native; print(pyspade_native.get_cmake_dir())"
     OUTPUT_VARIABLE PYSPADE_CMAKE_DIR
@@ -18,18 +18,18 @@ execute_process(
 )
 
 if(NOT PYSPADE_RESULT EQUAL 0)
-    message(FATAL_ERROR "pyspade-native not found. Install it with: pip install pyspade-native")
+    message(FATAL_ERROR "dtcc-pyspade-native not found. Install it with: pip install dtcc-pyspade-native")
 endif()
 
 find_package(pyspade_native REQUIRED PATHS ${PYSPADE_CMAKE_DIR} NO_DEFAULT_PATH)
-message(STATUS "Found pyspade-native: ${PYSPADE_CMAKE_DIR}")
+message(STATUS "Found dtcc-pyspade-native: ${PYSPADE_CMAKE_DIR}")
 
 # Create the Python extension module
 pybind11_add_module(_geometry_core
     src/cpp/geometry_binding.cpp
 )
 
-# Link with pyspade-native
+# Link with dtcc-pyspade-native
 target_link_libraries(_geometry_core PRIVATE pyspade_native::spade_wrapper)
 
 # Install the module

@@ -93,7 +93,7 @@ jobs:
 
       - name: Install wheel
         run: |
-          python -m pip install --find-links dist pyspade-native
+          python -m pip install --find-links dist dtcc-pyspade-native
 
       - name: Test import
         run: |

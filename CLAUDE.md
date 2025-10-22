@@ -58,9 +58,9 @@ When reviewing this repository, use context7 to validate:
 
 ## Project-Specific Context
 
-This is a Python package (`pyspade-native`) that distributes a C++ library (Spade triangulation) via PyPI without Python bindings. Key requirements:
-- Must work with `pip install pyspade-native` (from PyPI)
-- Must work with `pip install git+https://github.com/dtcc-platform/pyspade-native`
+This is a Python package (`dtcc-pyspade-native`) that distributes a C++ library (Spade triangulation) via PyPI without Python bindings. Key requirements:
+- Must work with `pip install dtcc-pyspade-native` (from PyPI)
+- Must work with `pip install git+https://github.com/dtcc-platform/dtcc-pyspade-native`
 - No Python bindings - pure C++ library distribution
 - No C++ package manager usage desired
 - Targets users who have C++ extensions that need this library

@@ -1,9 +1,9 @@
 #!/bin/bash
-# Build pyspade-native
+# Build dtcc-pyspade-native
 
 set -e
 
-echo "=== Building pyspade-native ==="
+echo "=== Building dtcc-pyspade-native ==="
 
 # Clean previous builds
 rm -rf build dist *.egg-info _skbuild

@@ -6,7 +6,7 @@ requires = [
 build-backend = "scikit_build_core.build"
 
 [project]
-name = "pyspade-native"
+name = "dtcc-pyspade-native"
 version = "0.1.0"
 description = "Spade C++ triangulation library packaged for Python projects (C++ only, no Python bindings)"
 readme = "README.md"
