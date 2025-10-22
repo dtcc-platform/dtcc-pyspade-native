@@ -53,11 +53,23 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
+      - name: Install Rust (Linux/macOS)
+        if: runner.os != 'Windows'
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+      - name: Install Rust (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          Invoke-WebRequest -Uri https://win.rustup.rs/x86_64 -OutFile rustup-init.exe
+          .\rustup-init.exe -y
+          echo "$env:USERPROFILE\.cargo\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
       - name: Build wheels
-        uses: pypa/cibuildwheel@v2.16
+        run: |
+          python -m pip install cibuildwheel
+          python -m cibuildwheel --output-dir wheelhouse
         env:
           CIBW_BUILD: cp38-* cp39-* cp310-* cp311-* cp312-*
 
@@ -71,10 +83,12 @@ jobs:
     needs: [build, build-wheels]
     runs-on: ubuntu-latest
     if: github.event.inputs.test_pypi == 'true' || github.event_name == 'workflow_dispatch'
-    permissions:
-      id-token: write
 
     steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
       - uses: actions/download-artifact@v4
         with:
           pattern: "*"
@@ -82,20 +96,24 @@ jobs:
           merge-multiple: true
 
       - name: Publish to Test PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          repository-url: https://test.pypi.org/legacy/
-          skip-existing: true
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.TEST_PYPI_API_TOKEN }}
+        run: |
+          python -m pip install twine
+          python -m twine upload --repository testpypi --skip-existing dist/*
 
   publish-pypi:
     name: Publish to PyPI
     needs: [build, build-wheels]
     runs-on: ubuntu-latest
     if: github.event_name == 'release' && github.event.action == 'published'
-    permissions:
-      id-token: write
 
     steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
       - uses: actions/download-artifact@v4
         with:
           pattern: "*"
@@ -103,4 +121,9 @@ jobs:
           merge-multiple: true
 
       - name: Publish to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+        run: |
+          python -m pip install twine
+          python -m twine upload dist/*
