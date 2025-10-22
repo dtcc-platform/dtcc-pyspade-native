@@ -112,6 +112,8 @@ if(NOT SPADE_FFI_FOUND)
 endif()
 
 message(STATUS "Using Spade FFI library: ${SPADE_FFI_LIBRARY}")
+# Share the resolved FFI path with parent scopes so installation logic can reuse it.
+set(SPADE_FFI_LIBRARY "${SPADE_FFI_LIBRARY}" CACHE FILEPATH "Path to Spade FFI shared library" FORCE)
 
 # =============================================================================
 # Create C++ Wrapper Library
@@ -156,6 +158,8 @@ if(DEFINED SPADE_PRIMARY_TARGET)
         POSITION_INDEPENDENT_CODE ON
         VERSION ${PROJECT_VERSION}
         SOVERSION ${PROJECT_VERSION_MAJOR}
+        INSTALL_RPATH "$ORIGIN"
+        BUILD_WITH_INSTALL_RPATH ON
     )
 
     # Export compile commands for IDEs

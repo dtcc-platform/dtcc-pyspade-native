@@ -40,24 +40,31 @@ install(
 # Install the Rust FFI library
 if(TARGET spade_wrapper)
     # Find and install the FFI library
+    if(DEFINED SPADE_FFI_LIBRARY AND EXISTS "${SPADE_FFI_LIBRARY}")
+        set(FFI_LIBS "${SPADE_FFI_LIBRARY}")
+    endif()
+
     set(FFI_SEARCH_PATHS
         "${CMAKE_CURRENT_BINARY_DIR}/cppspade/lib"
         "${CMAKE_CURRENT_SOURCE_DIR}/cppspade/target/release"
         "${CMAKE_CURRENT_BINARY_DIR}/cppspade/target/release"
     )
 
-    foreach(SEARCH_PATH ${FFI_SEARCH_PATHS})
-        file(GLOB FFI_LIBS
-            "${SEARCH_PATH}/libspade_ffi.so"
-            "${SEARCH_PATH}/libspade_ffi.dylib"
-            "${SEARCH_PATH}/libspade_ffi.a"
-            "${SEARCH_PATH}/spade_ffi.dll"
-            "${SEARCH_PATH}/spade_ffi.lib"
-        )
-        if(FFI_LIBS)
-            break()
-        endif()
-    endforeach()
+    if(NOT FFI_LIBS)
+        foreach(SEARCH_PATH ${FFI_SEARCH_PATHS})
+            file(GLOB FFI_LIB_CANDIDATES
+                "${SEARCH_PATH}/libspade_ffi.so"
+                "${SEARCH_PATH}/libspade_ffi.dylib"
+                "${SEARCH_PATH}/libspade_ffi.a"
+                "${SEARCH_PATH}/spade_ffi.dll"
+                "${SEARCH_PATH}/spade_ffi.lib"
+            )
+            if(FFI_LIB_CANDIDATES)
+                set(FFI_LIBS ${FFI_LIB_CANDIDATES})
+                break()
+            endif()
+        endforeach()
+    endif()
 
     if(FFI_LIBS)
         install(
