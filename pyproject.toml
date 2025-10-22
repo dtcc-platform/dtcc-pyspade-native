@@ -57,18 +57,23 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/dtcc-platform/pyspade-native"
-Documentation = "https://dtcc-platform.github.io/pyspade-native/"
-Repository = "https://github.com/dtcc-platform/pyspade-native"
-Issues = "https://github.com/dtcc-platform/pyspade-native/issues"
-Changelog = "https://github.com/dtcc-platform/pyspade-native/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/dtcc-platform/dtcc-pyspade-native"
+Documentation = "https://dtcc-platform.github.io/dtcc-pyspade-native/"
+Repository = "https://github.com/dtcc-platform/dtcc-pyspade-native"
+Issues = "https://github.com/dtcc-platform/dtcc-pyspade-native/issues"
+Changelog = "https://github.com/dtcc-platform/dtcc-pyspade-native/blob/main/CHANGELOG.md"
 
 [tool.scikit-build]
-cmake.minimum-version = "3.15"
+cmake.version = ">=3.15"
 cmake.build-type = "Release"
 wheel.packages = ["src/pyspade_native"]
 wheel.install-dir = "pyspade_native"
 install.components = ["spade_cpp"]
+sdist.include = [
+    "cppspade/cmake/*.cmake",
+    "cppspade/cmake/*.cmake.in",
+    "cmake/*.cmake.in",
+]
 
 [tool.scikit-build.cmake.define]
 SPADE_BUILD_EXAMPLES = "OFF"
