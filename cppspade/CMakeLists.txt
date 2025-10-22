@@ -19,13 +19,22 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Add our CMake modules to the path
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
+# Debug: Check if cmake directory exists
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+    message(STATUS "Found cmake directory at: ${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+    file(GLOB CMAKE_HELPERS "${CMAKE_CURRENT_SOURCE_DIR}/cmake/*.cmake")
+    message(STATUS "Found cmake files: ${CMAKE_HELPERS}")
+else()
+    message(WARNING "cmake directory not found at: ${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+endif()
+
 # Set default build type if not specified
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
 
-# Add our CMake modules
-  include(SpadeHelpers)
+# Include our CMake modules
+include(SpadeHelpers)
 
 # Create output directories
 set(SPADE_OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/lib")
