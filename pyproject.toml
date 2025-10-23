@@ -12,7 +12,7 @@ description = "Spade C++ triangulation library packaged for Python projects (C++
 readme = "README.md"
 license = {text = "MIT OR Apache-2.0"}
 authors = [
-    {name = Vasilis Naserentin", email = "vasilis.naserentin@chalmers.se"},
+    {name = "Vasilis Naserentin", email = "vasilis.naserentin@chalmers.se"},
 ]
 maintainers = [
     {name = "DTCC Dev Team", email = "dtcc@chalmers.se"},
