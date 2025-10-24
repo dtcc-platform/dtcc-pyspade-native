@@ -82,7 +82,7 @@ jobs:
     name: Publish to Test PyPI
     needs: [build, build-wheels]
     runs-on: ubuntu-latest
-    if: github.event.inputs.test_pypi == 'true' || github.event_name == 'workflow_dispatch'
+    if: github.event.inputs.test_pypi == 'true' && github.event_name == 'workflow_dispatch'
 
     steps:
       - uses: actions/setup-python@v5
