@@ -75,6 +75,22 @@ if(TARGET spade_wrapper)
         list(REMOVE_DUPLICATES FFI_LIBS)
     endif()
 
+    if(FFI_LIBS AND APPLE)
+        foreach(FFI_LIB ${FFI_LIBS})
+            get_filename_component(FFI_NAME "${FFI_LIB}" NAME)
+            if(FFI_NAME MATCHES "\\.dylib$")
+                execute_process(
+                    COMMAND install_name_tool -id "@rpath/${FFI_NAME}" "${FFI_LIB}"
+                    RESULT_VARIABLE INSTALL_NAME_RESULT
+                    ERROR_VARIABLE INSTALL_NAME_ERROR
+                )
+                if(NOT INSTALL_NAME_RESULT EQUAL 0)
+                    message(WARNING "install_name_tool failed for ${FFI_LIB}: ${INSTALL_NAME_ERROR}")
+                endif()
+            endif()
+        endforeach()
+    endif()
+
     if(FFI_LIBS)
         install(
             FILES ${FFI_LIBS}

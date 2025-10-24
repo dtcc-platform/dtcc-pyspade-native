@@ -131,6 +131,21 @@ message(STATUS "Using Spade FFI library: ${SPADE_FFI_LIBRARY}")
 if(SPADE_FFI_RUNTIME_LIBRARY AND NOT SPADE_FFI_RUNTIME_LIBRARY STREQUAL "${SPADE_FFI_LIBRARY}")
     message(STATUS "Runtime Spade FFI binary: ${SPADE_FFI_RUNTIME_LIBRARY}")
 endif()
+
+if(APPLE AND SPADE_FFI_LIBRARY AND EXISTS "${SPADE_FFI_LIBRARY}")
+    get_filename_component(_spade_ffi_name "${SPADE_FFI_LIBRARY}" NAME)
+    if(_spade_ffi_name MATCHES "\\.dylib$")
+        execute_process(
+            COMMAND install_name_tool -id "@rpath/${_spade_ffi_name}" "${SPADE_FFI_LIBRARY}"
+            RESULT_VARIABLE _ffi_install_name_result
+            ERROR_VARIABLE _ffi_install_name_error
+        )
+        if(NOT _ffi_install_name_result EQUAL 0)
+            message(WARNING "install_name_tool failed for ${SPADE_FFI_LIBRARY}: ${_ffi_install_name_error}")
+        endif()
+    endif()
+endif()
+
 # Share the resolved FFI path with parent scopes so installation logic can reuse it.
 set(SPADE_FFI_LIBRARY "${SPADE_FFI_LIBRARY}" CACHE FILEPATH "Path to Spade FFI shared library" FORCE)
 if(SPADE_FFI_RUNTIME_LIBRARY)
@@ -173,6 +188,12 @@ if(DEFINED SPADE_PRIMARY_TARGET)
     target_link_libraries(${SPADE_PRIMARY_TARGET} PUBLIC ${PLATFORM_LIBS})
 
     # Set properties
+    set(_spade_install_rpath "$ORIGIN")
+    if(APPLE)
+        set(_spade_install_rpath "@loader_path")
+        set(_spade_install_name_dir "@rpath")
+    endif()
+
     set_target_properties(${SPADE_PRIMARY_TARGET} PROPERTIES
         CXX_STANDARD 17
         CXX_STANDARD_REQUIRED ON
@@ -180,9 +201,15 @@ if(DEFINED SPADE_PRIMARY_TARGET)
         POSITION_INDEPENDENT_CODE ON
         VERSION ${PROJECT_VERSION}
         SOVERSION ${PROJECT_VERSION_MAJOR}
-        INSTALL_RPATH "$ORIGIN"
+        INSTALL_RPATH "${_spade_install_rpath}"
         BUILD_WITH_INSTALL_RPATH ON
     )
+
+    if(APPLE)
+        set_target_properties(${SPADE_PRIMARY_TARGET} PROPERTIES
+            INSTALL_NAME_DIR "${_spade_install_name_dir}"
+        )
+    endif()
 
     # Export compile commands for IDEs
     set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
