@@ -6,7 +6,7 @@ import pytest
 def test_import():
     """Test that the module can be imported."""
     import pyspade_native
-    assert pyspade_native.__version__ == "0.1.0"
+    assert pyspade_native.__version__ == "0.1.1"
 
 
 def test_get_include_dir():

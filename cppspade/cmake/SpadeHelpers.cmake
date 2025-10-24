@@ -17,7 +17,7 @@ function(find_or_build_spade_ffi)
 
     # Set defaults
     if(NOT ARGS_VERSION)
-        set(ARGS_VERSION "0.1.0")
+        set(ARGS_VERSION "0.1.1")
     endif()
 
     if(NOT ARGS_OUTPUT_DIR)
