@@ -13,6 +13,8 @@ from pathlib import Path
 from typing import List, Tuple, Optional
 import argparse
 import difflib
+from datetime import datetime
+import subprocess
 from colorama import init, Fore, Style
 
 # Initialize colorama for colored output
@@ -112,14 +114,100 @@ class VersionUpdater:
         self._update_file(helpers_file, pattern, replacement,
                          "default ARGS_VERSION", dry_run)
 
-    def update_all(self, dry_run: bool = True, show_diff: bool = False):
+    def update_changelog(self, dry_run: bool = True, release_date: str = None) -> bool:
+        """Update CHANGELOG.md for the new version"""
+        changelog_path = self.project_root / "CHANGELOG.md"
+        if not changelog_path.exists():
+            print(f"{Fore.YELLOW}⚠ CHANGELOG.md not found, skipping{Style.RESET_ALL}")
+            return False
+
+        with open(changelog_path, 'r') as f:
+            content = f.read()
+
+        # Check if version already exists
+        version_header = f"## [{self.version}]"
+        if version_header in content:
+            print(f"{Style.DIM}○ Version {self.version} already in CHANGELOG.md{Style.RESET_ALL}")
+            return False
+
+        # Find Unreleased section content
+        unreleased_pattern = r'## \[Unreleased\](.*?)(?=## \[|$|\[Unreleased\]:)'
+        unreleased_match = re.search(unreleased_pattern, content, re.DOTALL)
+
+        if not unreleased_match:
+            print(f"{Fore.YELLOW}⚠ Could not find [Unreleased] section in CHANGELOG.md{Style.RESET_ALL}")
+            return False
+
+        unreleased_content = unreleased_match.group(1).strip()
+
+        if not unreleased_content:
+            print(f"{Fore.YELLOW}⚠ No entries in [Unreleased] section{Style.RESET_ALL}")
+            return False
+
+        # Set release date
+        if release_date is None:
+            release_date = datetime.now().strftime("%Y-%m-%d")
+
+        # Create new version section
+        new_version_section = f"## [{self.version}] - {release_date}\n{unreleased_content}\n"
+
+        # Replace Unreleased content with empty section and add new version
+        new_content = re.sub(
+            r'(## \[Unreleased\]).*?(## \[)',
+            rf'\1\n\n{new_version_section}\n\2',
+            content,
+            count=1,
+            flags=re.DOTALL
+        )
+
+        # Update links at the bottom
+        links_pattern = r'(\[Unreleased\]: .*?\.\.\.HEAD)(.*?)$'
+        links_match = re.search(links_pattern, new_content, re.DOTALL)
+
+        if links_match:
+            # Update Unreleased link
+            repo_url = re.search(r'https://github\.com/[^/]+/[^/]+', links_match.group(1))
+            if repo_url:
+                repo = repo_url.group(0)
+                new_unreleased_link = f"[Unreleased]: {repo}/compare/v{self.version}...HEAD"
+                new_version_link = f"[{self.version}]: {repo}/releases/tag/v{self.version}"
+
+                # Check if there's a previous version
+                prev_version_pattern = r'\[([0-9]+\.[0-9]+\.[0-9]+)\]:'
+                prev_versions = re.findall(prev_version_pattern, links_match.group(2))
+
+                if prev_versions:
+                    # Update version link to compare with previous
+                    prev_version = prev_versions[0]
+                    new_version_link = f"[{self.version}]: {repo}/compare/v{prev_version}...v{self.version}"
+
+                # Update links section
+                new_links = f"{new_unreleased_link}\n{new_version_link}{links_match.group(2)}"
+                new_content = new_content[:links_match.start()] + new_links
+
+        self.changes.append((changelog_path, content, new_content, "Changelog release"))
+
+        if not dry_run:
+            with open(changelog_path, 'w') as f:
+                f.write(new_content)
+            print(f"{Fore.GREEN}✓ Updated CHANGELOG.md: Released version {self.version}{Style.RESET_ALL}")
+        else:
+            print(f"{Fore.CYAN}→ Would update CHANGELOG.md: Release version {self.version}{Style.RESET_ALL}")
+
+        return True
+
+    def update_all(self, dry_run: bool = True, show_diff: bool = False,
+                   update_changelog: bool = False, release_date: str = None):
         """Update all version references"""
         print(f"\n{Fore.BLUE}{'=' * 60}{Style.RESET_ALL}")
         print(f"{Fore.BLUE}{Style.BRIGHT}Version Update Report{Style.RESET_ALL}")
         print(f"{Fore.BLUE}{'=' * 60}{Style.RESET_ALL}\n")
 
         print(f"Target version: {Style.BRIGHT}{self.version}{Style.RESET_ALL}")
-        print(f"Mode: {Style.BRIGHT}{'DRY RUN' if dry_run else 'APPLYING CHANGES'}{Style.RESET_ALL}\n")
+        print(f"Mode: {Style.BRIGHT}{'DRY RUN' if dry_run else 'APPLYING CHANGES'}{Style.RESET_ALL}")
+        if update_changelog:
+            print(f"Changelog: {Style.BRIGHT}WILL UPDATE{Style.RESET_ALL}")
+        print()
 
         # Clear changes list for fresh run
         self.changes = []
@@ -131,6 +219,10 @@ class VersionUpdater:
         self.update_test_files(dry_run)
         self.update_cargo_toml(dry_run)
         self.update_spade_helpers(dry_run)
+
+        # Update changelog if requested
+        if update_changelog:
+            self.update_changelog(dry_run, release_date)
 
         # Show summary
         print(f"\n{Fore.BLUE}{'=' * 60}{Style.RESET_ALL}")
@@ -182,6 +274,8 @@ Examples:
   %(prog)s --apply      # Actually apply the changes
   %(prog)s --diff       # Show detailed diff of changes
   %(prog)s --version 1.0.0 --apply  # Override version and apply
+  %(prog)s --changelog --apply  # Update version and release changelog
+  %(prog)s --changelog --date 2024-10-24 --apply  # With custom date
         """
     )
 
@@ -204,6 +298,18 @@ Examples:
     )
 
     parser.add_argument(
+        '--changelog', '-c',
+        action='store_true',
+        help='Also update CHANGELOG.md (move Unreleased to version)'
+    )
+
+    parser.add_argument(
+        '--date',
+        type=str,
+        help='Release date for changelog (YYYY-MM-DD format)'
+    )
+
+    parser.add_argument(
         '--root', '-r',
         type=Path,
         default=Path.cwd(),
@@ -221,7 +327,12 @@ Examples:
             updater.version = args.version
 
         # Run the update
-        updater.update_all(dry_run=not args.apply, show_diff=args.diff)
+        updater.update_all(
+            dry_run=not args.apply,
+            show_diff=args.diff,
+            update_changelog=args.changelog,
+            release_date=args.date
+        )
 
     except Exception as e:
         print(f"{Fore.RED}Error: {e}{Style.RESET_ALL}", file=sys.stderr)

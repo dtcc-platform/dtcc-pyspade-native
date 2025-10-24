@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Comprehensive release documentation in RELEASING.md
+- Version management script to update all version references
+- Automated changelog management system with three integrated scripts
+
 ## [0.1.0] - 2024-10-22
 
 ### Added
